@@ -10,12 +10,36 @@
 			<h3>Você está logado como ${usuarioLogado.email}</h3>
 		</c:if>
 		
-		<form action="novaEmpresa" method="post">
-			Nome: <input type="text" name="nome">
-			<input type="submit" value="Enviar">	
+		<form action="executa" method="post">
+			<input type="hidden" name="tarefa" value="NovaEmpresa">
+			<table>
+				<tr>
+					<td>Nome:</td>
+					<td><input type="text" name="nome"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Enviar"></td>
+				</tr>
+			</table>	
 		</form>
 		
-		<form action="login" method="post">
+		<form action="executa" method="get">
+			<input type="hidden" name="tarefa" value="BuscaEmpresa">
+			<table>
+				<tr>
+					<td>Nome:</td>
+					<td><input type="text" name="filtro"></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Buscar"></td>
+				</tr>
+			</table>	
+		</form>
+		
+		<form action="executa" method="post">
+			<input type="hidden" name="tarefa" value="Login">
 			<table>
 				<tr>
 					<td>E-mail:</td>
@@ -32,7 +56,8 @@
 			</table>
 		</form>
 		
-		<form action="logout" method="post">
+		<form action="executa" method="post">
+			<input type="hidden" name="tarefa" value="Logout">
 			<input type="submit" value="Logout">
 		</form>
 	</body>
