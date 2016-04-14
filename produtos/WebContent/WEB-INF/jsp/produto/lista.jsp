@@ -4,8 +4,8 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <head>
 <script type="text/javascript" src="<c:url value="/js/jquery.js"/>"></script>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -31,27 +31,29 @@
 			<td width="20%">Remover?</td>
 		</tr>
 		
-		<%
-			List<Produto> produtoList = (List<Produto>) request.getAttribute("produtoList");
-			for(Produto p : produtoList) {
-		%>
-		
-			<tr id="produto<%= p.getId() %>">
-				<td><%= p.getNome().toUpperCase() %></td>
-				<td><%= p.getPreco() %></td>
-				<td><%= p.getDescricao() %></td>
-				<td><%= p.getDataInicioVenda().getTime() %></td>
-				<% if(p.isUsado()) { %>
-				<td>Sim</td>
-				<% } else { %>
-				<td>Não</td>
-				<% } %>
-				<td><a href="#" onclick="return removeProduto(<%= p.getId() %>)">Remover</a></td>
+		<c:forEach items="${produtoList}" var="p" varStatus="st">
+			<tr id="produto${p.id}">
+				<td>${st.count}</td>
+				<td>${p.nome}</td>
+				<td><fmt:formatNumber value="${p.preco}" type="currency" currencySymbol="R$"/></td>
+				<td>${p.descricao}</td>
+				<td><fmt:formatDate value="${p.dataInicioVenda.time}" pattern="EEEE, dd 'de' MMMM 'de' yyyy"/></td>
+				
+				<c:choose>
+					<c:when test="${p.usado}">
+					<td>Sim</td>
+					</c:when>
+					<c:otherwise>
+					<td>Não</td>
+					</c:otherwise>
+				</c:choose>
+
+				<td><a href="#" onclick="return removeProduto(${p.id})">Remover</a></td>
 			</tr>
-		<%
-			}
-		%>
+		</c:forEach>
 	</table>
-	<a href="/produtos/produto/formulario">Adicionar um produto</a>
+	
+	
+	<a href="<c:url value="/produto/formulario" />">Adicionar um produto</a>
 </body>
 </html>
