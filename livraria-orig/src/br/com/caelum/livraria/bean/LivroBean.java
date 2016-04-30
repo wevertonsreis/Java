@@ -6,7 +6,9 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.validator.ValidatorException;
 
 import br.com.caelum.livraria.dao.DAO;
 import br.com.caelum.livraria.modelo.Autor;
@@ -37,24 +39,40 @@ public class LivroBean implements Serializable {
 	/**
 	 * 
 	 */
-	public void gravar() {
+	public String gravar() {
 		System.out.println("Gravando livro " + this.livro.getTitulo());
 
 		if (livro.getAutores().isEmpty()) {
 			FacesContext.getCurrentInstance().addMessage("autor", new FacesMessage("Livro deve ter pelo menos um Autor."));
-			return;
+			return null;
 		}
 
 		new DAO<Livro>(Livro.class).adiciona(this.livro);
 		livro = new Livro();
+		return null;
 	}
-
+	
+	/**
+	 * 
+	 * @param facesContext
+	 * @param uiComponent
+	 * @param value
+	 * @throws ValidatorException
+	 */
+	public void comecaComDigitoUm(FacesContext facesContext, UIComponent uiComponent, Object object) throws ValidatorException {
+		String value = (String) object;
+		if (!value.startsWith("1")) {
+			throw new ValidatorException(new FacesMessage("O ISBN deve começar com o número 1"));
+		}
+	}
+	
 	/**
 	 * 
 	 */
-	public void gravarAutor() {
+	public String gravarAutor() {
 		Autor autor = new DAO<Autor>(Autor.class).buscaPorId(autorId);
 		livro.adicionaAutor(autor);
+		return null;
 	}
 	
 	public List<Autor> getAutores() {
