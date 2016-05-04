@@ -21,9 +21,14 @@ public class LivroBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Livro livro = new Livro();
-	
+
 	private Integer autorId;
-	
+
+	public void carregaPelaId() {
+		Integer id = livro.getId();
+		livro = new DAO<Livro>(Livro.class).buscaPorId(id);
+	}
+
 	public Livro getLivro() {
 		return livro;
 	}
@@ -47,11 +52,37 @@ public class LivroBean implements Serializable {
 			return null;
 		}
 
-		new DAO<Livro>(Livro.class).adiciona(this.livro);
+		if (livro.getId() == null) {
+			new DAO<Livro>(Livro.class).adiciona(this.livro);
+		}else {
+			new DAO<Livro>(Livro.class).atualiza(this.livro);
+		}
+
 		livro = new Livro();
 		return null;
 	}
-	
+
+	/**
+	 * 
+	 * @param livro
+	 * @return
+	 */
+	public String remover(Livro livro) {
+		new DAO<Livro>(Livro.class).remove(livro);
+		return null;
+	}
+
+	/**
+	 * 
+	 * @param livro
+	 * @return
+	 */
+	public String carregar(Livro livro) {
+		System.out.println("Carregando o livro = " + livro);
+		this.livro = livro;
+		return null;
+	}
+
 	/**
 	 * 
 	 * @param facesContext
@@ -65,7 +96,7 @@ public class LivroBean implements Serializable {
 			throw new ValidatorException(new FacesMessage("O ISBN deve começar com o número 1"));
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
@@ -74,17 +105,27 @@ public class LivroBean implements Serializable {
 		livro.adicionaAutor(autor);
 		return null;
 	}
-	
+
+	/**
+	 * 
+	 * @param autor
+	 * @return
+	 */
+	public String removerAutorDoLivro(Autor autor) {
+		livro.removerAutor(autor);
+		return null;
+	}
+
 	public List<Autor> getAutores() {
 		return new DAO<Autor>(Autor.class).listaTodos();
 	}
-	
+
 	public List<Livro> getLivros() {
 		return new DAO<Livro>(Livro.class).listaTodos();
 	}
-	
+
 	public List<Autor> getAutoresDoLivro() {
 		return livro.getAutores();
 	}
-	
+
 }
