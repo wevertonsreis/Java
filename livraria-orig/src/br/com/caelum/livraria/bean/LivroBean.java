@@ -3,18 +3,22 @@ package br.com.caelum.livraria.bean;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
+import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
-import br.com.caelum.livraria.dao.DAO;
+import br.com.caelum.livraria.dao.AutorDao;
+import br.com.caelum.livraria.dao.LivroDao;
+import br.com.caelum.livraria.log.Log;
 import br.com.caelum.livraria.modelo.Autor;
 import br.com.caelum.livraria.modelo.Livro;
 
-@ManagedBean
+@Named
 @ViewScoped
 public class LivroBean implements Serializable {
 
@@ -22,11 +26,23 @@ public class LivroBean implements Serializable {
 
 	private Livro livro = new Livro();
 
+	@Inject
+	private LivroDao livroDao;
+	@Inject
+	private AutorDao autorDao;
+	
+	private List<Livro> livros;
+	
 	private Integer autorId;
 
+	@PostConstruct
+	public void init() {
+		livros = livroDao.listaTodos();
+	}
+	
 	public void carregaPelaId() {
 		Integer id = livro.getId();
-		livro = new DAO<Livro>(Livro.class).buscaPorId(id);
+		livro = livroDao.buscaPorId(id);
 	}
 
 	public Livro getLivro() {
@@ -44,6 +60,7 @@ public class LivroBean implements Serializable {
 	/**
 	 * 
 	 */
+	@Log
 	public String gravar() {
 		System.out.println("Gravando livro " + this.livro.getTitulo());
 
@@ -53,12 +70,13 @@ public class LivroBean implements Serializable {
 		}
 
 		if (livro.getId() == null) {
-			new DAO<Livro>(Livro.class).adiciona(this.livro);
+			livroDao.adiciona(this.livro);
 		}else {
-			new DAO<Livro>(Livro.class).atualiza(this.livro);
+			livroDao.atualiza(this.livro);
 		}
 
 		livro = new Livro();
+		livros = livroDao.listaTodos();
 		return null;
 	}
 
@@ -68,7 +86,8 @@ public class LivroBean implements Serializable {
 	 * @return
 	 */
 	public String remover(Livro livro) {
-		new DAO<Livro>(Livro.class).remove(livro);
+		livros.remove(livro);
+		livroDao.remove(livro);
 		return null;
 	}
 
@@ -79,7 +98,7 @@ public class LivroBean implements Serializable {
 	 */
 	public String carregar(Livro livro) {
 		System.out.println("Carregando o livro = " + livro);
-		this.livro = livro;
+		this.livro = livroDao.buscaPorId(livro.getId());
 		return null;
 	}
 
@@ -93,7 +112,7 @@ public class LivroBean implements Serializable {
 	public void comecaComDigitoUm(FacesContext facesContext, UIComponent uiComponent, Object object) throws ValidatorException {
 		String value = (String) object;
 		if (!value.startsWith("1")) {
-			throw new ValidatorException(new FacesMessage("O ISBN deve começar com o número 1"));
+			throw new ValidatorException(new FacesMessage(FacesMessage.SEVERITY_ERROR,"ISBN", "O ISBN deve começar com o número 1"));
 		}
 	}
 
@@ -101,7 +120,7 @@ public class LivroBean implements Serializable {
 	 * 
 	 */
 	public String gravarAutor() {
-		Autor autor = new DAO<Autor>(Autor.class).buscaPorId(autorId);
+		Autor autor = autorDao.buscaPorId(autorId);
 		livro.adicionaAutor(autor);
 		return null;
 	}
@@ -111,21 +130,20 @@ public class LivroBean implements Serializable {
 	 * @param autor
 	 * @return
 	 */
-	public String removerAutorDoLivro(Autor autor) {
+	public void removerAutorDoLivro(Autor autor) {
 		livro.removerAutor(autor);
-		return null;
 	}
 
 	public List<Autor> getAutores() {
-		return new DAO<Autor>(Autor.class).listaTodos();
-	}
-
-	public List<Livro> getLivros() {
-		return new DAO<Livro>(Livro.class).listaTodos();
+		return autorDao.listaTodos();
 	}
 
 	public List<Autor> getAutoresDoLivro() {
 		return livro.getAutores();
 	}
 
+	public List<Livro> getLivros() {
+		return livros;
+	}
+	
 }

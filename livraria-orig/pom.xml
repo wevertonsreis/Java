@@ -4,38 +4,6 @@
   <artifactId>livraria</artifactId>
   <version>1.0</version>
   <packaging>war</packaging>
-  <dependencies>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <version>4.1.8.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <version>4.3.0.Final</version>
-    </dependency>
-    <dependency>
-		<groupId>com.sun.faces</groupId>
-		<artifactId>jsf-api</artifactId>
-		<version>2.2.12</version>
-	</dependency>
-   <dependency>
-	<groupId>com.sun.faces</groupId>
-	<artifactId>jsf-impl</artifactId>
-	<version>2.2.12</version>
-   </dependency>
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.22</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.primefaces.extensions</groupId>
-    	<artifactId>primefaces-extensions</artifactId>
-    	<version>4.0.0</version>
-    </dependency>
-  </dependencies>
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -65,4 +33,59 @@
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+  
+  	<!-- Hibernate -->
+	<dependency>
+    	<groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-entitymanager</artifactId>
+	    <version>4.1.8.Final</version>
+    </dependency>
+    <dependency>
+      	<groupId>org.hibernate</groupId>
+      	<artifactId>hibernate-validator</artifactId>
+      	<version>4.3.0.Final</version>
+    </dependency>
+    
+    <!-- Driver Mysql -->
+    <dependency>
+      	<groupId>mysql</groupId>
+      	<artifactId>mysql-connector-java</artifactId>
+      	<version>5.1.22</version>
+    </dependency>
+    
+    <!-- Implementação JSF -->
+    <dependency>
+		<groupId>com.sun.faces</groupId>
+		<artifactId>jsf-api</artifactId>
+		<version>2.2.12</version>
+	</dependency>
+   	<dependency>
+		<groupId>com.sun.faces</groupId>
+		<artifactId>jsf-impl</artifactId>
+		<version>2.2.12</version>
+   	</dependency>
+   	
+   	<!-- Primafaces -->
+	<dependency>
+    	<groupId>org.primefaces.extensions</groupId>
+    	<artifactId>primefaces-extensions</artifactId>
+    	<version>4.0.0</version>
+    </dependency>
+    
+    <!-- Themas -->
+    <dependency>  
+	    <groupId>org.primefaces.themes</groupId>  
+	    <artifactId>all-themes</artifactId>  
+	    <version>1.0.10</version>  
+	</dependency>  
+   	
+   	<!-- Implementação CDI -->
+	<dependency>
+		<groupId>org.jboss.weld.servlet</groupId>
+		<artifactId>weld-servlet</artifactId>
+		<version>2.3.4.Final</version>
+	</dependency>
+   
+  </dependencies>
 </project>
