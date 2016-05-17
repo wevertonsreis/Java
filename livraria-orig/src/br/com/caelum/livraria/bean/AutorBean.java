@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.caelum.livraria.contantes.AtributosDeSessao;
 import br.com.caelum.livraria.dao.AutorDao;
 import br.com.caelum.livraria.modelo.Autor;
 import br.com.caelum.livraria.tx.Transacional;
@@ -25,6 +25,9 @@ public class AutorBean implements Serializable {
 	@Inject
 	private AutorDao autorDao;
 	
+	@Inject
+	private FacesContext facesContext;
+	
 	private List<Autor> autores;
 	
 	@PostConstruct
@@ -37,10 +40,7 @@ public class AutorBean implements Serializable {
 		carregarAutores();
 	}
 	
-	@PreDestroy
-	public void destroy() {
-		System.out.println("AutorBean esta morrendo...");
-	}
+	
 	
 	private void carregarAutores() {
 		autores = autorDao.listaTodos();
@@ -64,6 +64,17 @@ public class AutorBean implements Serializable {
 		carregarAutores();
 	}
 
+	@SuppressWarnings("unchecked")
+	public String voltar() {
+		List<Autor> autores = (List<Autor>) facesContext.getExternalContext().getSessionMap().get(AtributosDeSessao.PESQUISA_AUTOR_RESULTADO);
+		
+		if (autores != null && !autores.isEmpty()) {
+			autores.remove(autor);
+			autores.add(autor);
+		}
+		return "pesquisaAutor?faces-redirec=true";
+	}
+	
 	public Autor getAutor() {
 		return autor;
 	}
