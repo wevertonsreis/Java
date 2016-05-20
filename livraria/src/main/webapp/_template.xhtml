@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+	
+	<h:head>
+	</h:head>
+   	<h:body>
+   		<div id="cabecalho">
+   			
+   			<h:panelGrid columns="2">
+   				<h:graphicImage library="img" name="logo.png"/>
+   				
+   				<h:form style="position:absolute;right:10px;">
+				    <p:themeSwitcher id="basic" style="width:165px" value="#{temaBean.tema}">
+				        <f:selectItem itemLabel="Choose Theme" itemValue="" />
+				        <f:selectItems value="#{temaBean.temas}" var="tema" itemLabel="#{tema}" itemValue="#{tema}"/>
+				        <f:ajax/>
+				    </p:themeSwitcher>
+				</h:form>
+   				
+   			</h:panelGrid>
+
+   			<h1><ui:insert name="titulo"/></h1>
+   			
+   			<p:growl id="mensagem" showDetail="true" autoUpdate="true"/>
+   			
+   			<h:form rendered="#{usuarioLogado != null}">
+			    
+			    <p:menuButton value="Menu">
+			        <p:menuitem value="Livros" action="#{menuBean.redirect('livro')}" icon="fa fa-fw fa-edit"/>
+			        <p:menuitem value="Autores" action="#{menuBean.redirect('autor')}" icon="fa fa-fw fa-edit"/>
+			        <p:menuitem value="Vendas" action="#{menuBean.redirect('vendas')}" icon="fa fa-fw fa-edit"/>
+			        <p:menuitem value="Pesquisa Autor" action="#{menuBean.redirect('pesquisaAutor')}" icon="fa fa-fw fa-edit"/>
+			        <p:separator />
+			        <p:menuitem value="Logout" action="#{loginBean.efetuarLogout}" icon="fa fa-fw fa-sign-out" />
+			    </p:menuButton>
+			    
+			</h:form>
+			
+   		</div>
+   		
+   		<div id="conteudo">
+   			<br/>
+   			<ui:insert name="conteudo"/>
+   		</div>
+   		
+   		<div id="rodape">
+   			Criado por Weverton Reis - Página: <ui:insert name="nomePagina"/> - Usuário: <h:outputText value="#{usuarioLogado.email}"/>
+   		</div>
+   	</h:body>
+   
+</html>
