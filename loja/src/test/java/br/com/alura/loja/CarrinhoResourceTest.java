@@ -14,11 +14,6 @@ import com.thoughtworks.xstream.XStream;
 
 import br.com.alura.loja.modelo.Carrinho;
 
-/**
- * 
- * @author Weverton Reis
- *
- */
 public class CarrinhoResourceTest {
 
 	@Before
@@ -35,7 +30,7 @@ public class CarrinhoResourceTest {
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080");
-		String conteudo = target.path("/carrinhos").request().get(String.class);
+		String conteudo = target.path("/carrinhos/1").request().get(String.class);
 
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 
@@ -43,4 +38,12 @@ public class CarrinhoResourceTest {
 
 		Assert.assertTrue(carrinho.getRua().equals("Rua Vergueiro 3185"));
 	}
+	
+//	@Test
+	public void testaAdicionaCarrinho() {
+		Client client = ClientBuilder.newClient();
+		WebTarget target = client.target("http://localhost:8080");
+		String conteudo = target.path("/carrinhos").request().get(String.class);
+	}
+	
 }
