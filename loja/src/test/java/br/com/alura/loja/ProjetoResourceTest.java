@@ -10,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.com.alura.loja.modelo.Carrinho;
 import br.com.alura.loja.modelo.Projeto;
 
 import com.thoughtworks.xstream.XStream;
