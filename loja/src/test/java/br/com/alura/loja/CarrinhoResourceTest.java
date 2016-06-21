@@ -2,7 +2,10 @@ package br.com.alura.loja;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import junit.framework.Assert;
 
@@ -26,7 +29,7 @@ public class CarrinhoResourceTest {
 		Servidor.stop();
 	}
 	
-	@Test
+//	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080");
@@ -39,11 +42,23 @@ public class CarrinhoResourceTest {
 		Assert.assertTrue(carrinho.getRua().equals("Rua Vergueiro 3185"));
 	}
 	
-//	@Test
+	@Test
 	public void testaAdicionaCarrinho() {
 		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080");
-		String conteudo = target.path("/carrinhos").request().get(String.class);
+		
+		Carrinho carrinho = new Carrinho();
+		carrinho.setId(2l);
+		carrinho.setRua("teste");
+		carrinho.setCidade("teste");
+		
+		String xml = carrinho.toXML();
+		
+		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
+		
+		Response response = target.path("/carrinhos").request().post(entity);
+		System.out.println(response.getStatus());
+		Assert.assertTrue(response.getStatus() == 201);
 	}
 	
 }
