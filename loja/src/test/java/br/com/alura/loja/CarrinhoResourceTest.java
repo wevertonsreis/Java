@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 
 import junit.framework.Assert;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,6 +21,8 @@ import br.com.alura.loja.modelo.Carrinho;
 
 public class CarrinhoResourceTest {
 
+	private Client client;
+	
 	@Before
 	public void startServidor() {
 		Servidor.start();
@@ -29,22 +33,28 @@ public class CarrinhoResourceTest {
 		Servidor.stop();
 	}
 	
-//	@Test
-	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
-		Client client = ClientBuilder.newClient();
+	@Test
+	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {		
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		
+		this.client = ClientBuilder.newClient(config);
+		
 		WebTarget target = client.target("http://localhost:8080");
 		String conteudo = target.path("/carrinhos/1").request().get(String.class);
 
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
 
-		System.out.println(carrinho);
-
-		Assert.assertTrue(carrinho.getRua().equals("Rua Vergueiro 3185"));
+		Assert.assertTrue(carrinho.getRua().contains("Rua Vergueiro 3185"));
 	}
 	
 	@Test
 	public void testaAdicionaCarrinho() {
-		Client client = ClientBuilder.newClient();
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		
+		this.client = ClientBuilder.newClient(config);
+		
 		WebTarget target = client.target("http://localhost:8080");
 		
 		Carrinho carrinho = new Carrinho();
@@ -57,7 +67,7 @@ public class CarrinhoResourceTest {
 		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
 		
 		Response response = target.path("/carrinhos").request().post(entity);
-		System.out.println(response.getStatus());
+		
 		Assert.assertTrue(response.getStatus() == 201);
 	}
 	
