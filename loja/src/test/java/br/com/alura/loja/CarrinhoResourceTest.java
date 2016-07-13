@@ -15,9 +15,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.thoughtworks.xstream.XStream;
-
 import br.com.alura.loja.modelo.Carrinho;
+
+import com.thoughtworks.xstream.XStream;
 
 public class CarrinhoResourceTest {
 
@@ -25,6 +25,11 @@ public class CarrinhoResourceTest {
 	
 	@Before
 	public void startServidor() {
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		
+		this.client = ClientBuilder.newClient(config);
+		
 		Servidor.start();
 	}
 	
@@ -35,12 +40,8 @@ public class CarrinhoResourceTest {
 	
 	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {		
-		ClientConfig config = new ClientConfig();
-		config.register(new LoggingFilter());
-		
-		this.client = ClientBuilder.newClient(config);
-		
 		WebTarget target = client.target("http://localhost:8080");
+		
 		String conteudo = target.path("/carrinhos/1").request().get(String.class);
 
 		Carrinho carrinho = (Carrinho) new XStream().fromXML(conteudo);
@@ -50,11 +51,6 @@ public class CarrinhoResourceTest {
 	
 	@Test
 	public void testaAdicionaCarrinho() {
-		ClientConfig config = new ClientConfig();
-		config.register(new LoggingFilter());
-		
-		this.client = ClientBuilder.newClient(config);
-		
 		WebTarget target = client.target("http://localhost:8080");
 		
 		Carrinho carrinho = new Carrinho();

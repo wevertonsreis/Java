@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 
 import junit.framework.Assert;
 
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +21,15 @@ import com.thoughtworks.xstream.XStream;
 
 public class ProjetoResourceTest {
 	
+	private Client client;
+	
 	@Before
 	public void startServidor() {
+		ClientConfig config = new ClientConfig();
+		config.register(new LoggingFilter());
+		
+		this.client = ClientBuilder.newClient(config);
+		
 		Servidor.start();
 	}
 	
@@ -29,22 +38,19 @@ public class ProjetoResourceTest {
 		Servidor.stop();
 	}
 	
-//	@Test
+	@Test
 	public void testaQueBuscarUmCarrinhoTrazOCarrinhoEsperado() {
-		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080");
-		String conteudo = target.path("/projetos").request().get(String.class);
+		
+		String conteudo = target.path("/projetos/1").request().get(String.class);
 
 		Projeto projeto = (Projeto) new XStream().fromXML(conteudo);
 
-		System.out.println(projeto);
-
-		Assert.assertTrue(projeto.getNome().equals("Minha loja"));
+		Assert.assertTrue(projeto.getNome().contains("Minha loja"));
 	}
 	
 	@Test
 	public void testaAdicionaProjeto() {
-		Client client = ClientBuilder.newClient();
 		WebTarget target = client.target("http://localhost:8080");
 		
 		Projeto projeto = new Projeto();
@@ -54,7 +60,7 @@ public class ProjetoResourceTest {
 		Entity<String> entity = Entity.entity(xml, MediaType.APPLICATION_XML);
 		
 		Response response = target.path("/projetos").request().post(entity);
-		System.out.println(response.getStatus());
+
 		Assert.assertTrue(response.getStatus() == 201);
 	}
 }
